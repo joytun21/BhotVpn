@@ -1,11 +1,10 @@
 #!/bin/bash
-
 # Colors
-green="\e[38;5;87m"
+green="\e[38;5;82m"
 red="\e[38;5;196m"
 neutral="\e[0m"
-blue="\e[38;5;130m"
-orange="\e[38;5;99m"
+orange="\e[38;5;130m"
+blue="\e[38;5;39m"
 yellow="\e[38;5;226m"
 purple="\e[38;5;141m"
 bold_white="\e[1;37m"
@@ -37,34 +36,76 @@ print_rainbow() {
     done
     echo -e "$reset"
 }
-cek_status() {
-    status=$(systemctl is-active --quiet $1 && echo "aktif" || echo "nonaktif")
-    if [ "$status" = "aktif" ]; then
-        echo -e "${green}GOOD${neutral}"
+
+pasang_package() {
+  echo -e "${blue}Memulai pengecekan dan instalasi dependensi...${reset}"
+
+  # Cek dan install npm saja (tanpa node)
+  if ! command -v npm >/dev/null 2>&1; then
+    echo -e "${orange}Menginstall npm...${reset}"
+    apt update && apt install -y npm
+  else
+    echo -e "${green}npm sudah terinstall.${reset}"
+  fi
+
+  # PM2
+  if ! command -v pm2 >/dev/null 2>&1; then
+    echo -e "${orange} Menginstall PM2...${reset}"
+    npm install -g pm2
+  else
+    echo -e "${green} PM2 sudah terinstall.${reset}"
+  fi
+
+  # Daftar dependensi APT
+  dependencies=(
+    build-essential
+    libcairo2-dev
+    libpango1.0-dev
+    libjpeg-dev
+    libgif-dev
+    librsvg2-dev
+    pkg-config
+    libpixman-1-dev
+  )
+
+  for pkg in "${dependencies[@]}"; do
+    if dpkg -s "$pkg" >/dev/null 2>&1; then
+      echo -e "${green} $pkg sudah terinstall.${reset}"
     else
-        echo -e "${red}BAD${neutral}"
+      echo -e "${yellow} Menginstall $pkg...${reset}"
+      apt install -y "$pkg"
     fi
+  done
+
+  echo -e "${pink} Semua dependensi telah diperiksa dan diinstal bila diperlukan.${reset}"
+}
+
+
+cek_status() {
+    pm2 status | grep -q sellvpn && echo "aktif" || echo "nonaktif"
 }
 
 setup_bot() {
+    timedatectl set-timezone Asia/Jakarta || echo -e "${red}Failed to set timezone to Jakarta${neutral}"
+    
     if ! dpkg -s nodejs >/dev/null 2>&1; then
-        curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash - || echo -e "${red}Failed to download Node.js setup${neutral}"
+        curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash - || echo -e "${red}Failed to download Node.js setup${neutral}"
         apt-get install -y nodejs || echo -e "${red}Failed to install Node.js${neutral}"
         npm install -g npm@latest
     else
         echo -e "${green}Node.js is already installed, skipping...${neutral}"
     fi
 
-    if [ ! -f /root/BotVPN/app.js ]; then
-        git clone https://github.com/joytun21/BhotVpn.git /root/BotVPN
+    if [ ! -f /root/BotVPN2/app.js ]; then
+        git clone https://github.com/joytun21/BhotVpn.git /root/BotVPN2
     fi
 
-    if ! npm list --prefix /root/BotVPN express telegraf axios moment sqlite3 >/dev/null 2>&1; then
-        npm install --prefix /root/BotVPN sqlite3 express crypto telegraf axios dotenv
+    if ! npm list --prefix /root/BotVPN2 express telegraf axios moment sqlite3 >/dev/null 2>&1; then
+        npm install --prefix /root/BotVPN2 sqlite3 express crypto telegraf axios dotenv
     fi
 
-    if [ -n "$(ls -A /root/BotVPN)" ]; then
-        chmod +x /root/BotVPN/*
+    if [ -n "$(ls -A /root/BotVPN2)" ]; then
+        chmod +x /root/BotVPN2/*
     fi
 }
 
@@ -84,7 +125,6 @@ server_app() {
         if [ -z "$token" ]; then
             echo -e "${red}Token bot tidak boleh kosong. Silakan coba lagi.${neutral}"
         fi
-    done
     done
     while [ -z "$adminid" ]; do
         read -p "Masukkan admin ID: " adminid
@@ -116,7 +156,7 @@ server_app() {
             echo -e "${red}API KEY tidak boleh kosong. Silakan coba lagi.${neutral}"
         fi
     done
-    rm -f /root/BotVPN/.vars.json
+    rm -f /root/BotVPN2/.vars.json
     echo "{
   \"BOT_TOKEN\": \"$token\",
   \"USER_ID\": \"$adminid\",
@@ -125,7 +165,8 @@ server_app() {
   \"DATA_QRIS\": \"$dataqris\",
   \"MERCHANT_ID\": \"$merchantid\",
   \"API_KEY\": \"$apikey\"
-}" >/root/BotVPN/.vars.json
+}" >/root/BotVPN2/.vars.json
+
     cat >/etc/systemd/system/sellvpn.service <<EOF
 [Unit]
 Description=App Bot sellvpn Service
@@ -145,9 +186,9 @@ EOF
 echo '#!/bin/bash' >/usr/bin/server_sellvpn
 echo "USER_ID=$adminid" >>/usr/bin/server_sellvpn
 echo "BOT_TOKEN=$token" >>/usr/bin/server_sellvpn
-echo 'curl -s -F chat_id="$USER_ID" -F document=@"/root/BotVPN/sellvpn.db" "https://api.telegram.org/bot$BOT_TOKEN/sendDocument" >/dev/null 2>&1' >>/usr/bin/server_sellvpn
+echo 'curl -s -F chat_id="$USER_ID" -F document=@"/root/BotVPN2/sellvpn.db" "https://api.telegram.org/bot$BOT_TOKEN/sendDocument" >/dev/null 2>&1' >>/usr/bin/server_sellvpn
 echo '#!/bin/bash' >/usr/bin/sellvpn
-echo "cd /root/BotVPN" >>/usr/bin/sellvpn
+echo "cd /root/BotVPN2" >>/usr/bin/sellvpn
 echo "node app.js" >>/usr/bin/sellvpn
 chmod +x /usr/bin/server_sellvpn
 chmod +x /usr/bin/sellvpn
@@ -169,7 +210,8 @@ EOF
     echo -e "${green}Type ${bold_white}/start${neutral} or ${bold_white}menu${neutral} in the telegram bot${neutral}"
 }
 
-if [[ ${1} == "sellvpn" ]]; then
+if [[ ${1} == "sellvpn" ]]; then    
+    pasang_package
     setup_bot
     server_app
 else
