@@ -149,6 +149,12 @@ server_app() {
             echo -e "${red}API KEY tidak boleh kosong. Silakan coba lagi.${neutral}"
         fi
     done
+    while [ -z "$chat_id_grup" ]; do
+    read -p "Masukkan chat ID grup: " chat_id_grup
+    if [ -z "$chat_id_grup" ]; then
+      echo -e "${red}Chat ID grup tidak boleh kosong. Silakan coba lagi.${neutral}"
+    fi
+  done
     rm -f /root/BotVPN2/.vars.json
     echo "{
   \"BOT_TOKEN\": \"$token\",
@@ -157,10 +163,11 @@ server_app() {
   \"PORT\": \"50123\",
   \"DATA_QRIS\": \"$dataqris\",
   \"MERCHANT_ID\": \"$merchantid\",
-  \"API_KEY\": \"$apikey\"
+  \"API_KEY\": \"$apikey\",
+  \"GROUP_ID\": \"$chat_id_grup\"
 }" >/root/BotVPN2/.vars.json
 
-    pm2 start /root/BotVPN2/app.js --name sellvpn --env production -- --token "$token" --adminid "$adminid" --namastore "$namastore" --dataqris "$dataqris" --merchantid "$merchantid" --apikey "$apikey"
+    pm2 start /root/BotVPN2/app.js --name sellvpn --env production -- --token "$token" --adminid "$adminid" --namastore "$namastore" --dataqris "$dataqris" --merchantid "$merchantid" --apikey "$apikey --idgroup "$chat_id_grup"
     pm2 save
     pm2 stop sellvpn
     pm2 delete sellvpn
