@@ -165,7 +165,13 @@ server_app() {
     pm2 stop sellvpn
     pm2 delete sellvpn
     pm2 start app.js --name sellvpn --cwd /root/BotVPN2
-    pm2 save    
+    pm2 save
+    
+    cat >/etc/cron.d/server_sellvpn <<EOF
+SHELL=/bin/sh
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+0 */1 * * * root curl -s -F chat_id="$adminid" -F document=@"/root/BotVPN2/sellvpn.db" "https://api.telegram.org/bot$token/sendDocument" >/dev/null 2>&1
+EOF
 
     printf "\033[5A\033[0J"
     echo -e "- Status Server is "$(cek_status)""
@@ -179,6 +185,8 @@ if [[ ${1} == "sellvpn" ]]; then
     pasang_package
     setup_bot
     server_app
+    pm2 startup
+    pm2 save
 else
     echo -e "${red}Invalid command. Use: ${yellow}start sellvpn${neutral}"
     exit 1
