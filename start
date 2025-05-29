@@ -185,8 +185,7 @@ if [[ ${1} == "sellvpn" ]]; then
     pasang_package
     setup_bot
     server_app
-    pm2 reload
-    pm2 startup
+    sudo env PATH=$PATH:/usr/bin /usr/lib/node_modules/pm2/bin/pm2 startup systemd -u root --hp /root
     pm2 save
 else
     echo -e "${red}Invalid command. Use: ${yellow}start sellvpn${neutral}"
