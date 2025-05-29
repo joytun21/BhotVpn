@@ -52,8 +52,7 @@ server_app() {
     echo -e "       ${green}•${neutral} server addsaldo user"
     echo -e "       ${green}•${neutral} server ceksaldo user"
     echo -e "${orange}─────────────────────────────────────────${neutral}"
-    bash
-read -p "Masukkan token bot: " token
+    read -p "Masukkan token bot: " token
 while [ -z "$token" ]; do
   read -p "Masukkan token bot: " token
   if [ -z "$token" ]; then
