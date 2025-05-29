@@ -167,6 +167,7 @@ server_app() {
     EOF
 
     pm2 start /root/BotVPN2/app.js --name sellvpn --env production -- --token "$token" --adminid "$adminid" --namastore "$namastore" --dataqris "$dataqris" --merchantid "$merchantid" --apikey "$apikey"    
+    pm2 save
     pm2 stop sellvpn
     pm2 delete sellvpn
     pm2 start app.js --name sellvpn --cwd /root/BotVPN2
