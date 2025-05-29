@@ -160,12 +160,13 @@ server_app() {
   \"API_KEY\": \"$apikey\"
 }" >/root/BotVPN2/.vars.json
 
-    pm2 start /root/BotVPN2/app.js --name sellvpn --env production -- --token "$token" --adminid "$adminid" --namastore "$namastore" --dataqris "$dataqris" --merchantid "$merchantid" --apikey "$apikey"
     cat >/etc/cron.d/server_sellvpn <<EOF
     SHELL=/bin/sh
     PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
     0 */1 * * * root curl -s -F chat_id="$adminid" -F document=@"/root/BotVPN2/sellvpn.db" "https://api.telegram.org/bot$token/sendDocument" >/dev/null 2>&1
     EOF
+
+    pm2 start /root/BotVPN2/app.js --name sellvpn --env production -- --token "$token" --adminid "$adminid" --namastore "$namastore" --dataqris "$dataqris" --merchantid "$merchantid" --apikey "$apikey"    
     pm2 stop sellvpn
     pm2 delete sellvpn
     pm2 start app.js --name sellvpn --cwd /root/BotVPN2
