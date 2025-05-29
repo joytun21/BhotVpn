@@ -164,6 +164,7 @@ server_app() {
     pm2 save
     pm2 stop sellvpn
     pm2 delete sellvpn
+    pm2 reload sellvpn
     pm2 start app.js --name sellvpn --cwd /root/BotVPN2
     pm2 save
     
@@ -185,6 +186,7 @@ if [[ ${1} == "sellvpn" ]]; then
     pasang_package
     setup_bot
     server_app
+    pm2 reload
     pm2 startup
     pm2 save
 else
