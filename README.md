@@ -16,27 +16,24 @@
 1. Instal NVM (Node Version Manager) jika belum terinstal:
 ```
 bash
-```
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
 ```
 2.  Setelah instalasi selesai, jalankan perintah berikut untuk memuat NVM:
-    ```bash
-source ~/.bashrc
-```
+    ```
+    bash
+      source ~/.bashrc
 3. Instal Node.js versi 20 menggunakan NVM:
 ```
 bash
-```
 nvm install 20
 ```
 4.  Setelah instalasi selesai, gunakan Node.js versi 20 dengan menjalankan perintah berikut:
-    ```bash
-nvm use 20
-```
+    ```
+    bash
+    nvm use 20
 5. Untuk memastikan bahwa Node.js versi 20 sedang digunakan, jalankan perintah berikut:
 ```
 bash
-```
 node -v
 ```
 
