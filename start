@@ -82,7 +82,7 @@ setup_bot() {
     timedatectl set-timezone Asia/Jakarta || echo -e "${red}Failed to set timezone to Jakarta${neutral}"
     
     if ! dpkg -s nodejs >/dev/null 2>&1; then
-        curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash - || echo -e "${red}Failed to download Node.js setup${neutral}"
+        curl -fsSL https://deb.nodesource.com/setup_23.x | sudo -E bash - || echo -e "${red}Failed to download Node.js setup${neutral}"
         apt-get install -y nodejs || echo -e "${red}Failed to install Node.js${neutral}"
         npm install -g npm@latest
     else
