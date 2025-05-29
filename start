@@ -161,6 +161,7 @@ server_app() {
 }" >/root/BotVPN2/.vars.json
 
     pm2 start /root/BotVPN2/app.js --name sellvpn --env production -- --token "$token" --adminid "$adminid" --namastore "$namastore" --dataqris "$dataqris" --merchantid "$merchantid" --apikey "$apikey"
+    pm2 startup
     pm2 save
     pm2 stop sellvpn
     pm2 delete sellvpn
@@ -185,7 +186,7 @@ if [[ ${1} == "sellvpn" ]]; then
     pasang_package
     setup_bot
     server_app
-    sudo env PATH=$PATH:/usr/bin /usr/lib/node_modules/pm2/bin/pm2 startup systemd -u root --hp /root
+    pm2 startup
     pm2 save
 else
     echo -e "${red}Invalid command. Use: ${yellow}start sellvpn${neutral}"
