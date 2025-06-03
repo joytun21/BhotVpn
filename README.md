@@ -1,3 +1,5 @@
+## Hallo😎
+
 ## Fitur
 
 - **Service Create**: Membuat akun VPN baru.
@@ -37,11 +39,9 @@ Jika Anda ingin menjadikan Node.js versi 20 sebagai versi default, jalankan peri
 nvm alias default 20
 ```
 
-## Installasi Otomatis1
+## Installasi Otomatis
 ```
 sysctl -w net.ipv6.conf.all.disable_ipv6=1 && sysctl -w net.ipv6.conf.default.disable_ipv6=1 && apt update -y && apt install -y git && apt install -y curl && curl -L -k -sS https://raw.githubusercontent.com/joytun21/BhotVpn/refs/heads/main/start -o start && bash start sellvpn && [ $? -eq 0 ] && rm -f start
 ```
-### installasi otomatis2
-```
-sysctl -w net.ipv6.conf.all.disable_ipv6=1 && sysctl -w net.ipv6.conf.default.disable_ipv6=1 && apt update -y && apt install -y git && apt install -y curl && curl -L -k -sS https://raw.githubusercontent.com/joytun21/BhotVpn/refs/heads/main/mulay -o mulay && bash mulay sellvpn && [ $? -eq 0 ] && rm -f mulay
+
 
