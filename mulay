@@ -95,9 +95,7 @@ case "$1" in
         pasang_package
         setup_bot
         ;;
-    uninstall)
-        hapus_bot
-        ;;
+    
     *)
         echo -e "${red}Perintah tidak dikenal. Gunakan:${reset} ${yellow}bash install.sh sellvpn${reset} atau ${yellow}bash install.sh uninstall${reset}"
         ;;
