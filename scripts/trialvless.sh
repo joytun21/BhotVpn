@@ -1,60 +1,36 @@
 #!/bin/bash
+username="trial`</dev/urandom tr -dc a-z0-9 | head -c4`"
+domain=$(cat /etc/xray/domain)
+masaaktif="1"
+quota="1"
+iplimit="1"
+uuid=$(cat /proc/sys/kernel/random/uuid)
 
-# Validasi IP Izin
-ipsaya=$(curl -sS ipv4.icanhazip.com)
-data_server=$(curl -v --insecure --silent https://google.com/ 2>&1 | grep Date | sed -e 's/< Date: //')
-date_list=$(date +"%Y-%m-%d" -d "$data_server")
-data_ip="https://raw.githubusercontent.com/joytun21/scjoy/main/izin"
-useexp=$(wget -qO- $data_ip | grep $ipsaya | awk '{print $3}')
-
-if [[ $date_list > $useexp ]]; then
-  echo '{ "status": "error", "message": "PERMISSION DENIED", "ip": "'$ipsaya'" }'
-  exit 1
+MYIP=$(curl -sS ipv4.icanhazip.com)
+IZIN=$(curl -sS https://raw.githubusercontent.com/wildyproject/perizinan/main/ip | grep $MYIP)
+if [[ $MYIP != $IZIN ]]; then
+  echo "Permission Denied!"
+  exit 0
 fi
 
-# Generate Akun
-domain=$(cat /etc/xray/domain)
-user=trial-`tr -dc a-z0-9 </dev/urandom | head -c4`
-exp=1
-uuid=$(cat /proc/sys/kernel/random/uuid)
-email=${user}
-today=$(date +"%Y-%m-%d")
-exp_date=$(date -d "$today +$exp days" +"%Y-%m-%d")
-ip=$(curl -s ipv4.icanhazip.com)
-tls_port=443
-none_port=80
-grpc_port=443
-
-cat >> /etc/xray/config.json <<EOF
-### $user $exp_date
-{
-  "id": "$uuid",
-  "flow": "",
-  "email": "$email",
-  "alterId": 0,
-  "limitIp": 0,
-  "totalGB": 0,
-  "expiry": "$exp_date"
-}
-EOF
-
-# Restart service
-systemctl restart xray
+exp=`date -d "$masaaktif days" +"%d-%m-%Y")"
 
 # Output JSON
 cat <<EOF
 {
-  "status": "success",
-  "username": "$user",
-  "uuid": "$uuid",
-  "domain": "$domain",
-  "ip": "$ip",
-  "created": "$today",
-  "expired": "$exp_date",
-  "port_tls": "$tls_port",
-  "port_ntls": "$none_port",
-  "port_grpc": "$grpc_port",
-  "vless_tls": "vless://$uuid@$domain:$tls_port?encryption=none&security=tls&type=ws&path=/vless#$user",
-  "message": "Trial VLESS account created successfully"
+  "status": true,
+  "data": {
+    "username": "$username",
+    "uuid": "$uuid",
+    "ip": "$MYIP",
+    "domain": "$domain",
+    "quota": "${quota}GB",
+    "ip_limit": "$iplimit",
+    "created": "$(date +"%d-%m-%Y")",
+    "expired": "$exp",
+    "link_tls": "vless://$uuid@$domain:443?encryption=none&security=tls&type=ws&host=$domain&path=%2Fvless#TRIAL-$username",
+    "link_ntls": "vless://$uuid@$domain:80?encryption=none&security=none&type=ws&host=$domain&path=%2Fvless#TRIAL-$username",
+    "link_grpc": "vless://$uuid@$domain:443?mode=gun&security=tls&type=grpc&serviceName=vless-grpc&sni=$domain#TRIAL-$username"
+  }
 }
 EOF
