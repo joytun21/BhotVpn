@@ -1,0 +1,10 @@
+db.run(`
+  CREATE TABLE IF NOT EXISTS reseller_logs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id TEXT,
+    username TEXT,
+    durasi INTEGER,
+    harga INTEGER,
+    created_at TEXT
+);
+`);
