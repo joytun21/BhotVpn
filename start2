@@ -103,15 +103,6 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 0 */1 * * * root curl -s -F chat_id="$adminid" -F document=@"/root/BotVPN2/sellvpn.db" "https://api.telegram.org/bot$token/sendDocument" >/dev/null 2>&1
 EOF
 
-cat <<EOF > /root/BotVPN2/logger.js
-const logger = {
-  info: (...args) => console.log('[INFO]', ...args),
- warn: (...args) => console.warn('[WARN]', ...args),
-  error: (...args) => console.error('[ERROR]', ...args),
-   };
-  module.exports = logger;
-  EOF
-
     pm2 start app.js --name sellvpn --cwd /root/BotVPN2 --log /var/log/sellvpn.log
     pm2 save
     pm2 startup
