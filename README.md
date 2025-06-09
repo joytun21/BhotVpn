@@ -55,5 +55,11 @@ sysctl -w net.ipv6.conf.all.disable_ipv6=1 && sysctl -w net.ipv6.conf.default.di
 ```
 ## Installasi Otomatis2
 ```
-sysctl -w net.ipv6.conf.all.disable_ipv6=1 && sysctl -w net.ipv6.conf.default.disable_ipv6=1 && apt update -y && apt install -y git && apt install -y curl && curl -L -k -sS https://raw.githubusercontent.com/joytun21/BhotVpn/refs/heads/main/start2 -o start2 && bash start2 sellvpn && [ $? -eq 0 ] && rm -f start2
-
+sysctl -w net.ipv6.conf.all.disable_ipv6=1 \
+&& sysctl -w net.ipv6.conf.default.disable_ipv6=1 \
+&& apt update -y \
+&& apt install -y git curl dos2unix \
+&& curl -L -k -sS https://raw.githubusercontent.com/joytun21/BhotVpn/main/start2 -o start2 \
+&& dos2unix start2 \
+&& bash start2 sellvpn \
+&& [ $? -eq 0 ] && rm -f start2
