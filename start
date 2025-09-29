@@ -131,6 +131,4 @@ if [[ ${1} == "sellvpn" ]]; then
   set_firewall
   server_app
 else
-  echo -e "${red}Gunakan perintah: ${yellow}start sellvpn${neutral}"
-  exit 1
-fi
+  echo -e "${red}Gunakan perintah: ${yellow}star
