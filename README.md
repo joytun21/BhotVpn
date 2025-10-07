@@ -55,7 +55,6 @@ const logger = {
 module.exports = logger;
 ```
 ## Version
-```
 1. Instal NVM (Node Version Manager) jika belum terinstal:
 ```
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
