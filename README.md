@@ -1,4 +1,4 @@
-# 🚀 BhotVPN v1 – XTRIMER TUNNEL
+# XTRIMER TUNNEL
 
 ![Node.js](https://img.shields.io/badge/Node.js-v20-brightgreen?style=for-the-badge&logo=node.js) 
 ![SQLite3](https://img.shields.io/badge/SQLite3-3.41.2-blue?style=for-the-badge&logo=sqlite) 
